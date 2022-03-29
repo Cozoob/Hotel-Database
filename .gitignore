@@ -131,3 +131,4 @@ dist
 
 # Own
 node_modules
+.idea
