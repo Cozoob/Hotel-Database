@@ -32,7 +32,8 @@ app.use(bodyParser.json())
 
 // ROUTES
 app.get('/', ((req, res) => {
-    res.status(200).sendFile(__dirname + "/static/index.html")
+    res.send("SIEMA GIENIU");
+    // res.status(200).sendFile(__dirname + "/static/index.html")
 }))
 
 
