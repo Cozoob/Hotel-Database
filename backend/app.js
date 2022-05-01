@@ -27,8 +27,9 @@ app.use(bodyParser.json())
 
 
 // IMPORT ROUTES
+const userRoute = require('./routes/user');
 
-
+app.use('/user', userRoute);
 
 // ROUTES
 app.get('/', ((req, res) => {

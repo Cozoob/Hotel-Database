@@ -1,9 +1,8 @@
-const { Int32 } = require('mongodb');
 const mongoose = require('mongoose');
 
 const roleSchema = new mongoose.Schema({
     roleID:{
-        type: Int32,
+        type: Number,
         required: true,
         unique: true,
         dropDups: true

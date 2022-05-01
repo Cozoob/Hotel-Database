@@ -1,11 +1,10 @@
-const { Int32 } = require('mongodb');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     username:{
         type: String,
         required: true,
-        unique: true,
+        uique: true,
         dropDups: true
     },
     email:{
@@ -19,8 +18,8 @@ const userSchema = new mongoose.Schema({
         required: true,
         select: false
     },
-    rolesID:{
-        type: Int32,
+    roleID:{
+        type: Number,
         default: 0
     }
 });
