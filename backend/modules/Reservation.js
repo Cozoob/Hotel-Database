@@ -1,15 +1,31 @@
 const mongoose = require('mongoose');
 
 const reservationSchema = new mongoose.Schema({
-    roomID:{
+    rooms: [
+        {
+            room: {
+                type: mongoose.Schema.ObjectId,
+                ref: 'Room'
+            },
+
+            quantity: {
+                type: Number,
+                required: true
+            }
+        }
+    ],
+    amount: {
+        type: Number,
+        required: true
+    },
+    date: {
         type: String,
         required: true
     },
-    userID:{
-        type: String,
+    numberOfDays: {
+        type: Number,
         required: true
     }
 });
 
-reservationSchema.index({roomID: 1,userID: 1}, {unique: true});
-module.exports = mongoose.model('Reservation', reservationSchema);
+module.exports = mongoose.model('Reservation', reservationSchema)

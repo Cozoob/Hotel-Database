@@ -29,9 +29,12 @@ app.use(bodyParser.json())
 // IMPORT ROUTES
 const userRoute = require('./routes/user');
 const roomsRoute = require('./routes/rooms');
+const reservationsRoute = require('./routes/reservations');
+
 
 app.use('/user', userRoute);
 app.use('/rooms', roomsRoute);
+app.use('/reservations', reservationsRoute);
 
 // ROUTES
 app.get('/', ((req, res) => {
