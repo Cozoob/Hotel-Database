@@ -11,9 +11,9 @@ const RoleEnum = require('../enums/Role');
 
 // CREATE
 router.post('/login', (req, res, next) => {
-    try{    
+    try {
         const body = req.body;
-        if(!(body.username && body.email && body.password)){
+        if (!(body.username && body.email && body.password)) {
             // res.send(body);
             return res.status(400).send({
                 registration: false,
@@ -28,54 +28,54 @@ router.post('/login', (req, res, next) => {
         const passwordHash = body.password;
 
         User.findOne({
-            $or : [{
+            $or: [{
                 username: username
-            },{
+            }, {
                 email: email
-            },{
+            }, {
                 password: 1, _id: 1, username: 1, email: 1, roleID: 1
             }, async (err, user) => {
-                if(err) return res.status(500).send("Something went wrong");
-                if(!user) return res.status(401).send({
+                if (err) return res.status(500).send("Something went wrong");
+                if (!user) return res.status(401).send({
                     login: false,
                     message: "Invalid data."
                 });
-                
+
                 // autentykacja???
                 return res.status(200).json({
                     login: true,
                     message: "Logged in succesfully.",
-                    user:{
+                    user: {
                         _id: user._id,
                         username: user.username,
                         email: user.email,
-                        roleID: user.roleID
+                        roleID: user.roleID,
                     }
                 });
             }]
         });
-    } catch (err){
+    } catch (err) {
         console.log(err);
         return res.status(500).send("Something went wrong.");
     }
 });
 
-router.post('/logout', (req, res, next) =>{
-    try{
+router.post('/logout', (req, res, next) => {
+    try {
         return res.status(200).send({
             logout: true,
             message: "Logged out succesfully"
         });
-    } catch (err){
+    } catch (err) {
         console.log(err);
         return res.status(500).send("Something went wrong");
     }
 });
 
-router.post('/register', async (req, res, next) =>{
-    try{
+router.post('/register', async (req, res, next) => {
+    try {
         const body = req.body;
-        if(!(body.username && body.email && body.password)){
+        if (!(body.username && body.email && body.password)) {
             // res.send(body);
             return res.status(400).send({
                 registration: false,
@@ -91,12 +91,12 @@ router.post('/register', async (req, res, next) =>{
 
         const result = await User.findOne({
             $or: [
-                {username: username},
-                {email: email}
+                { username: username },
+                { email: email }
             ]
         });
 
-        if(result){
+        if (result) {
             return res.status(400).send({
                 registration: false,
                 message: "Username or email already in use."
@@ -107,8 +107,8 @@ router.post('/register', async (req, res, next) =>{
             username: username,
             email: email,
             passwordHash: passwordHash
-        }, (err, user) =>{
-            if(err) return res.status(400).send({
+        }, (err, user) => {
+            if (err) return res.status(400).send({
                 registration: false,
                 message: "Data validation failed."
             });
@@ -119,7 +119,7 @@ router.post('/register', async (req, res, next) =>{
         }
         );
 
-    } catch(err){
+    } catch (err) {
         console.log(err);
         return res.status(500).send("Something went wrong!");
     }
@@ -127,44 +127,112 @@ router.post('/register', async (req, res, next) =>{
 
 // READ
 router.get('/', async (req, res) => {
-    try{
+    try {
         const users = await User.find();
         res.status(200).json(users);
     }
-    catch (err){
+    catch (err) {
         console.log(err);
         res.status(500).send("Something went wrong!");
     }
 });
 
-router.get('/:id', async (req, res) =>{
-    try{
-        if(!((res.user && res.user._id === req.params.id) || (res.user && res.user.roleID == RoleEnum.ADMIN_ID))){
+router.get('/:id', async (req, res) => {
+    try {
+        if (!((res.user && res.user._id === req.params.id) || (res.user && res.user.roleID == RoleEnum.ADMIN_ID))) {
             return res.status(401).send({
                 auth: false,
                 message: "Not allowed!"
             });
         }
 
-        if(!mongoose.isValidObjectId(res.params.id)){
+        if (!mongoose.isValidObjectId(res.params.id)) {
             res.status(200).send(null);
             return
         }
 
         let user = await User.findById(res.params.id);
-        if(user !== null){
+        if (user !== null) {
             res.status(200).json(user);
         } else {
             res.status(200).send([]);
         }
-    } catch (err){
+    } catch (err) {
         console.log(err);
         res.status(500).send("Something went wrong!")
     }
 });
 
+
+// DELETE
+router.delete('/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+
+        if (!mongoose.isValidObjectId(id)) {
+            res.status(404).send("Can't find guest with given id")
+            return
+        }
+
+        const user = await User.findByIdAndDelete(id)
+
+        if (user !== null) {
+            res.status(200).json("Userdeleted successfully")
+        }
+        else {
+            res.status(404).send("Can't find user with given id")
+        }
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).send("Something went wrong")
+    }
+})
+
+
 // UPDATE
-// TODO 
+// router.put('/:id', [verifyUser([RoleEnum.ADMIN]), async (req, res) => {
+router.put('/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+
+        if (!mongoose.isValidObjectId(id)) {
+            res.status(404).send("Can't find user with given id")
+            return
+        }
+
+        const body = req.body
+        let validationFailed = false
+
+        const user = await User.findByIdAndUpdate(id, { $set: body },
+            { new: true, runValidators: true }).lean()
+        // .catch(err => {
+        //     if (err) {
+        //         res.status(400).send("Data validation failed")
+        //         validationFailed = true
+        //     }
+        // })
+
+        if (validationFailed)
+            return
+
+
+        if (user !== null) {
+            res.status(200).json({
+                message: "User updated successfully",
+                user: user
+            })
+        }
+        else {
+            res.status(404).send("Can't user room with given id")
+        }
+    }
+    catch (err) {
+        console.log(err)
+        res.status(500).send("Something went wrong")
+    }
+    // }])
+})
 
 
 module.exports = router;

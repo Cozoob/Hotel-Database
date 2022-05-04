@@ -19,7 +19,7 @@ app.use(async (req, res, next) => {
 
 
 app.use((req, res, next) => {
-    console.log(req.method + " " +req.url + " at " + new Date(Date.now()))
+    console.log(req.method + " " + req.url + " at " + new Date(Date.now()))
     return next()
 })
 
@@ -28,8 +28,13 @@ app.use(bodyParser.json())
 
 // IMPORT ROUTES
 const userRoute = require('./routes/user');
+const roomsRoute = require('./routes/rooms');
+const reservationsRoute = require('./routes/reservations');
+
 
 app.use('/user', userRoute);
+app.use('/rooms', roomsRoute);
+app.use('/reservations', reservationsRoute);
 
 // ROUTES
 app.get('/', ((req, res) => {
@@ -40,7 +45,7 @@ app.get('/', ((req, res) => {
 
 // CONNECT TO DB
 mongoose.connect(process.env.DB_CONNECTION)
-    .then(()=>{
+    .then(() => {
         console.log("Connected successfully to DB")
     })
     .catch((err) => {
