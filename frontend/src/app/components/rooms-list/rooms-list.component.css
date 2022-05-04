@@ -1,0 +1,32 @@
+.roomsContainer .room {
+    display: flex;
+    flex-direction: row;
+    border: rgb(130, 129, 129) 1px solid;
+    margin-bottom: 10px;
+    width: 60vw;
+    margin-left: 20vw;
+}
+
+.roomsContainer .room img {
+    width: 15vw;
+}
+
+.roomsContainer .room .room-info {
+    width: 45vw;
+    display: flex;
+    flex-direction: column;
+    font-size: 20px;
+    margin-top: 20px;
+}
+
+.roomsContainer .room .room-info .room-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.roomsContainer .room .room-info .room-rest {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-around;
+}

@@ -1,0 +1,13 @@
+<div class="roomsContainer">
+    <div *ngFor="let room of roomsList" class="room">
+        <img src="{{room.imageLink}}">
+        <div class="room-info">
+            <div class="room-name">{{room.name}}</div>
+            <div class="room-rest">
+                <div>{{room.price}} $</div>
+                <button>Reserve</button>
+                <button (click)="removeRoom(room)">Remove</button>
+            </div>
+        </div>
+    </div>
+</div>

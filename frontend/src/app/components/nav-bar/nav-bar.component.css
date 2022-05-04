@@ -1,0 +1,32 @@
+.list-menu {
+    margin-top: 0;
+    margin-left: none;
+    width: 100vw;
+    margin-left: -50px;
+    margin-top: -15px;
+}
+
+.list-menu .menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: #003580;
+    height: 70px;
+    margin-left: none;
+    align-items: center;
+}
+
+.list-menu .menu .menu-el li {
+    list-style-type: none;
+}
+
+.list-menu .menu .menu-el li a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.list-menu .menu .menu-el li a:hover {
+    color: rgb(200, 196, 196);
+}
