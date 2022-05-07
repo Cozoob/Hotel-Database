@@ -53,7 +53,7 @@ router.get('/:id', async (req, res) => {
         })
     }
     catch (err) {
-        console.log(error)
+        console.log(err)
         return res.status(500).send("Something went wrong")
     }
 })
@@ -80,7 +80,7 @@ router.get('/:uid/:rid', async (req, res) => {
         })
     }
     catch (err) {
-        console.log(error)
+        console.log(err)
         return res.status(500).send("Something went wrong")
     }
 })
@@ -122,7 +122,7 @@ router.put('/:uid/:rid', async (req, res) => {
         })
     }
     catch (err) {
-        console.log(error)
+        console.log(err)
         return res.status(500).send("Something went wrong")
     }
 })

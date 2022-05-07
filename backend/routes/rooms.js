@@ -67,7 +67,7 @@ router.get('/:id', async (req, res) => {
             return
         }
 
-        const room = JSON.parse(JSON.stringify(await Room.findById(id)))
+        const room = await Room.findById(id)
 
         if (room !== null) {
             res.status(200).json(room)
@@ -86,7 +86,6 @@ router.get('/:id', async (req, res) => {
 
 
 //UPDATE
-// router.put('/:id', [verifyUser([RoleEnum.ADMIN]), async (req, res) => {
 router.put('/:id', async (req, res) => {
     try {
         const id = req.params.id
