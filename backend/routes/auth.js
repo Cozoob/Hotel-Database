@@ -61,10 +61,10 @@ router.post('/login', async (req, res) => {
 
         User.findOne({$or: [{username: username}, {email: email}]},{passwordHash:1, _id:1, username:1, email:1, roleID:1},{}, async (err, user)=>{
             if (err) return res.status(500).send("Something went wrong")
-            if (!user) return res.status(401).send({login:false, message:"Invalid data"})
+            if (!user) return res.status(400).send({login:false, message:"Invalid data"})
 
             if (!bcrypt.compare(password, user.passwordHash))
-                return res.status(401).send({login:false, message:"Invalid data"})
+                return res.status(400).send({login:false, message:"Invalid data"})
 
             // access token
             let accessToken = await signAccess(user, ACCESS_EXPIRES_IN)
@@ -91,8 +91,8 @@ router.post('/token/refresh', async (req, res) => {
 
         await RefreshToken.findOne({refreshToken:token}, {}, {}, async (err, record) => {
             if (err) throw new Error("Error fetching refresh token")
-            if (!record) return res.status(401).send("Invalid token")
-            if (tokenExpired(record.expDate)) return res.status(401).send("Token expired")
+            if (!record) return res.status(400).send("Invalid token")
+            if (tokenExpired(record.expDate)) return res.status(400).send("Token expired")
 
             let user = await User.findById(record.userID)
             let newAccessToken = await signAccess(user, ACCESS_EXPIRES_IN)
