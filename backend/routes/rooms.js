@@ -4,12 +4,10 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const Room = require('../modules/Room');
 const RoleEnum = require('../enums/Role');
-// const { verifyUser } = require("../middleware/auth");
 
 // wszystko zakomentowane trzeba dodać jak stworzymy logowanie i weryfikacje użytkownika
 
 //CREATE
-// router.post('/', [verifyUser([RoleEnum.ADMIN]), async (req, res) => {
 router.post('/', async (req, res, next) => {
     try {
         const body = req.body;

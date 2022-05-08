@@ -2,11 +2,13 @@ const mongoose = require('mongoose');
 
 const ratingSchema = new mongoose.Schema({
     roomID:{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Room',
         required: true
     },
     userID:{
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     rating:{

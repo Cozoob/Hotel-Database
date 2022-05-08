@@ -5,10 +5,12 @@ const router = express.Router();
 const User = require('../modules/User');
 const bcrypt = require("bcrypt");
 
-
+const isAuthenticated = require('../middleware/auth/isAuthenticated')
+const isAdmin = require('../middleware/auth/isAdmin')
+const isHimself = require('../middleware/auth/isHimself')
 
 // READ
-router.get('/', async (req, res) => {
+router.get('/', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).json(users);
@@ -19,15 +21,15 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', isAuthenticated, isHimself("id"),async (req, res) => {
     try {
 
-        if (!mongoose.isValidObjectId(res.params.id)) {
+        if (!mongoose.isValidObjectId(req.params.id)) {
             res.status(200).send(null);
             return
         }
 
-        let user = await User.findById(res.params.id);
+        let user = await User.findById(req.params.id);
         if (user !== null) {
             res.status(200).json(user);
         } else {

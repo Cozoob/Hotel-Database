@@ -11,7 +11,7 @@ const randToken = require('rand-token')
 require('dotenv/config')
 
 const REFRESH_TOKEN_LENGTH = 256
-const ACCESS_EXPIRES_IN = 60*5
+const ACCESS_EXPIRES_IN = 60*60*24 //todo 60*5
 
 // AUTH
 router.post('/register', async (req, res) => {
@@ -128,7 +128,8 @@ async function signAccess(user, expiresIn){
             _id: user._id,
             username: user.username,
             email: user.email,
-            roleID: user.roleID
+            roleID: user.roleID,
+            reservations: user.reservations
         },
         process.env.JWT_SECRET,
         {expiresIn: expiresIn})

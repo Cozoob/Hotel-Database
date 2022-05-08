@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Reservation = require('./Reservation');
+const roleEnum = require('../enums/Role')
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -21,7 +22,7 @@ const userSchema = new mongoose.Schema({
     },
     roleID: {
         type: Number,
-        default: 0
+        default: roleEnum.CLIENT_ID
     },
     reservations: [
         {
