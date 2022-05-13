@@ -109,4 +109,26 @@ export class RoomsService {
     }
     return null
   }
+
+  getLocalRoomWithID(id: string): Room | null {
+    for (let room of this.allRooms) {
+      if (room._id === id) {
+        return room
+      }
+    }
+    return null
+  }
+
+  getLocalRoomObserverWithID(id: string): Observable<Room | null> {
+    if (this.roomObservers.has(id)) {// @ts-ignore
+      return this.roomObservers.get(id).asObservable()
+    }
+
+    let room = this.getLocalRoomWithID(id)
+    let subject = new BehaviorSubject<Room | null>(room)
+    this.roomObservers.set(id, subject)
+    return subject
+  }
+
+
 }

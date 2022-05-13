@@ -11,36 +11,38 @@ const randToken = require('rand-token')
 require('dotenv/config')
 
 const REFRESH_TOKEN_LENGTH = 256
-const ACCESS_EXPIRES_IN = 60*60*24 //todo 60*5
+const ACCESS_EXPIRES_IN = 60 * 60 * 24 //todo 60*5
 
 // AUTH
 router.post('/register', async (req, res) => {
     try {
         const body = req.body
         if (!(body.username && body.email && body.password))
-            return res.status(400).send({registration:false, error:"Invalid data"})
+            return res.status(400).send({ registration: false, error: "Invalid data" })
 
         const username = body.username
         const email = body.email
         const salt = bcrypt.genSaltSync(12)
         const passwordHash = bcrypt.hashSync(body.password, salt)
 
-        const result = await User.findOne({$or:[
-                {username:username},
-                {email:email}
-            ]})
+        const result = await User.findOne({
+            $or: [
+                { username: username },
+                { email: email }
+            ]
+        })
 
         if (result)
-            return res.status(400).send({registration:false, error:"Username or email already in use"})
+            return res.status(400).send({ registration: false, error: "Username or email already in use" })
 
         User.create({
             username: username,
             email: email,
             passwordHash: passwordHash
-        }, (err, user)=>{
-            if (err) return res.status(400).send({registration:false, error:"Data validation failed"})
+        }, (err, user) => {
+            if (err) return res.status(400).send({ registration: false, error: "Data validation failed" })
 
-            return res.status(201).send({registration:true, error:"New user registered"})
+            return res.status(201).send({ registration: true, error: "New user registered" })
         })
 
     } catch (err) {
@@ -53,18 +55,18 @@ router.post('/login', async (req, res) => {
     try {
         const body = req.body
         if (!((body.username || body.email) && body.password))
-            return res.status(400).send({login:false, message:"Invalid data"})
+            return res.status(400).send({ login: false, message: "Invalid data" })
 
         const username = body.username
         const email = body.email
         const password = body.password
 
-        User.findOne({$or: [{username: username}, {email: email}]},{passwordHash:1, _id:1, username:1, email:1, roleID:1},{}, async (err, user)=>{
+        User.findOne({ $or: [{ username: username }, { email: email }] }, { passwordHash: 1, _id: 1, username: 1, email: 1, roleID: 1, reservations: 1 }, {}, async (err, user) => {
             if (err) return res.status(500).send("Something went wrong")
-            if (!user) return res.status(400).send({login:false, message:"Invalid data"})
+            if (!user) return res.status(400).send({ login: false, message: "Invalid data" })
 
             if (!bcrypt.compare(password, user.passwordHash))
-                return res.status(400).send({login:false, message:"Invalid data"})
+                return res.status(400).send({ login: false, message: "Invalid data" })
 
             // access token
             let accessToken = await signAccess(user, ACCESS_EXPIRES_IN)
@@ -75,7 +77,7 @@ router.post('/login', async (req, res) => {
                 throw new Error("Max amount of finding refresh token tries exceeded")
 
 
-            return res.status(200).json({login:true, message:"Logged in successfully", access: accessToken, refresh: refreshToken})
+            return res.status(200).json({ login: true, message: "Logged in successfully", access: accessToken, refresh: refreshToken, user: user })
         })
 
     } catch (err) {
@@ -89,7 +91,7 @@ router.post('/token/refresh', async (req, res) => {
 
         let token = req.body.refresh
 
-        await RefreshToken.findOne({refreshToken:token}, {}, {}, async (err, record) => {
+        await RefreshToken.findOne({ refreshToken: token }, {}, {}, async (err, record) => {
             if (err) throw new Error("Error fetching refresh token")
             if (!record) return res.status(400).send("Invalid token")
             if (tokenExpired(record.expDate)) return res.status(400).send("Token expired")
@@ -97,11 +99,16 @@ router.post('/token/refresh', async (req, res) => {
             let user = await User.findById(record.userID)
             let newAccessToken = await signAccess(user, ACCESS_EXPIRES_IN)
             let newRefreshToken = await setRefreshTokenForUser(user)
-            if (!newRefreshToken){
+            if (!newRefreshToken) {
                 throw new Error("Max amount of finding refresh token tries exceeded")
             }
 
-            return res.status(200).json({access: newAccessToken, refresh: newRefreshToken})
+            return res.status(200).json({
+                login: true,
+                message: "Token refresh worked", access: newAccessToken,
+                refresh: newRefreshToken,
+                user: user
+            })
         }).clone()
 
     } catch (err) {
@@ -114,6 +121,8 @@ router.post('/token/reject', async (req, res) => {
     try {
 
         let refreshToken = req.body.refresh
+        console.log("yshjdk")
+        console.log(refreshToken)
         await deleteRefreshToken(refreshToken)
         res.status(204).send("Logged out successfully")
 
@@ -123,23 +132,23 @@ router.post('/token/reject', async (req, res) => {
     }
 })
 
-async function signAccess(user, expiresIn){
+async function signAccess(user, expiresIn) {
     return await jwt.sign({
-            _id: user._id,
-            username: user.username,
-            email: user.email,
-            roleID: user.roleID,
-            reservations: user.reservations
-        },
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        roleID: user.roleID,
+        reservations: user.reservations
+    },
         process.env.JWT_SECRET,
-        {expiresIn: expiresIn})
+        { expiresIn: expiresIn })
 }
 
-function tokenExpired(expDate){
+function tokenExpired(expDate) {
     return expDate < Date.now()
 }
 
-async function setRefreshTokenForUser(user){
+async function setRefreshTokenForUser(user) {
     let attempt = 1
     let refreshToken = randToken.uid(REFRESH_TOKEN_LENGTH)
     while (attempt <= 3 && !await setRefreshToken(user, refreshToken)) {
@@ -153,22 +162,22 @@ async function setRefreshTokenForUser(user){
     return refreshToken
 }
 
-async function setRefreshToken(user, token){
+async function setRefreshToken(user, token) {
 
     let result = true;
     await RefreshToken.updateOne(
         {
-            userID:user._id
+            userID: user._id
         },
         {
-            userID:user._id,
+            userID: user._id,
             refreshToken: token,
             expDate: addDays(Date.now(), 1)
         },
         {
             upsert: true
         }
-    ).catch((err)=>{
+    ).catch((err) => {
         console.log(err)
         result = false
     })
@@ -176,8 +185,8 @@ async function setRefreshToken(user, token){
     return result // success or fail
 }
 
-async function deleteRefreshToken(token){
-    await RefreshToken.findOneAndDelete({refreshToken:token})
+async function deleteRefreshToken(token) {
+    await RefreshToken.findOneAndDelete({ refreshToken: token })
 }
 
 function addDays(date, days) {

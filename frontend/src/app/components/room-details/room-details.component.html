@@ -1,1 +1,24 @@
-<p>room-details works!</p>
+<button class="backBtn" (click)="router.navigate(['rooms-list'])">Back</button>
+
+<div *ngIf="room !== null">
+    <div>{{room.name}}</div>
+    <div>price: {{room.price}}$</div>
+    <img src="{{room.imageLink}}" width="500px">
+</div>
+
+<!-- <div>
+    <p>Create reservation</p>
+    <form [formGroup]="signInForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label>E-mail or login</label>
+            <input type="text" class="form-control" formControlName="eMail">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" formControlName="password">
+        </div>
+        <div class="btnContainer">
+            <button type="submit">Sign in</button>
+        </div>
+    </form>
+</div> -->

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-in',
@@ -13,13 +15,24 @@ export class SignInComponent implements OnInit {
     password: new FormControl(null, Validators.required),
   })
 
-  constructor() { }
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
   }
 
   onSubmit() {
-    // todo 
+    let form = this.signInForm.value;
+
+    this.authService.login(form.eMail, form.password).subscribe(
+      next => {
+        this.authService.setSession(next)
+        this.router.navigateByUrl('/my-account')
+      },
+      error => {
+        this.signInForm.reset()
+        alert("Incorrect data")
+      }
+    )
   }
 
 }

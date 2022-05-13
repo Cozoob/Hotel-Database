@@ -12,21 +12,33 @@
             </li>
         </div>
 
-        <div class="menu-el">
+        <div class="menu-el" *ngIf="userService.isAdmin()">
             <li>
                 <a [routerLink]="['/add-room']">Add room</a>
             </li>
         </div>
 
-        <div class="menu-el">
+        <div class="menu-el" *ngIf="!userService.isLoggedIn()">
             <li>
                 <a [routerLink]="['/sign-in']">Sign in</a>
             </li>
         </div>
 
-        <div class="menu-el">
+        <div class="menu-el" *ngIf="!userService.isLoggedIn()">
             <li>
                 <a [routerLink]="['/sign-up']">Sign up</a>
+            </li>
+        </div>
+
+        <div class="menu-el" *ngIf="userService.isLoggedIn()">
+            <li>
+                <a [routerLink]="['/my-account']">My account</a>
+            </li>
+        </div>
+
+        <div class="menu-el" *ngIf="userService.isLoggedIn()">
+            <li>
+                <a [routerLink]="['/home']" (click)="signOut()">Sign out</a>
             </li>
         </div>
     </div>

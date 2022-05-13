@@ -27,6 +27,7 @@ export class AddRoomComponent implements OnInit {
 
     if (this.roomForm.valid) {
       this.roomService.addRoom(form.name, form.maxAvailableNumber, form.price, form.description, form.imageLink)
+      this.roomService.update()
       this.roomForm.reset();
       alert("Room created")
     }

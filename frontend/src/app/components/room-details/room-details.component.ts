@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Room } from 'src/app/models/room';
+import { RoomsService } from 'src/app/services/rooms.service';
 
 @Component({
   selector: 'app-room-details',
@@ -6,10 +9,27 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./room-details.component.css']
 })
 export class RoomDetailsComponent implements OnInit {
+  room: Room | null = null
+  roomsList: Room[] = []
+  loading: boolean = true
+  id: string | null = null
 
-  constructor() { }
+  constructor(private roomService: RoomsService, public router: Router, private activatedRoute: ActivatedRoute) {
 
-  ngOnInit(): void {
+    activatedRoute.paramMap.subscribe(async params => {
+      this.id = <string>params.get('id')
+
+      roomService.getLocalRoomObserverWithID(this.id).subscribe(
+        next => {
+          if (this.id === null)
+            return
+          this.room = roomService.getLocalRoomWithID(this.id)
+
+        })
+    })
+  }
+
+  ngOnInit() {
   }
 
 }

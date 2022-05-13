@@ -5,8 +5,9 @@
             <div class="room-name">{{room.name}}</div>
             <div class="room-rest">
                 <div>{{room.price}} $</div>
-                <button>Reserve</button>
-                <button (click)="removeRoom(room)">Remove</button>
+                <!-- <a *ngIf="userService.isLoggedIn()" [routerLink]="['/rooms-list/' + room._id]">Reserve</a> -->
+                <button *ngIf="userService.isLoggedIn()" (click)="reserve(room)">Reserve</button>
+                <button (click)="removeRoom(room)" *ngIf="userService.isAdmin()">Remove</button>
             </div>
         </div>
     </div>

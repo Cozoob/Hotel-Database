@@ -7,12 +7,14 @@ module.exports = function (req, res, next) {
 
     try {
 
+        console.log(req.headers.authorization)
+
         if (!req.headers.authorization || req.headers.authorization.split(' ').length !== 2)
             return res.status(401).send("No authorization token provided")
 
         const token = req.headers.authorization.split(' ')[1]
 
-        jwt.verify(token, process.env.JWT_SECRET, {},async (err, decoded) => {
+        jwt.verify(token, process.env.JWT_SECRET, {}, async (err, decoded) => {
             if (err) return res.status(401).send("Not authenticated")
 
             res.userData = decoded

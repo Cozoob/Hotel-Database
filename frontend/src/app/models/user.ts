@@ -1,4 +1,4 @@
-import { Reservation } from "./reservation";
+import { UserReservation } from "./user-reservations";
 
 export interface User {
     _id: string,
@@ -6,5 +6,5 @@ export interface User {
     email: string,
     passwordHash: string,
     roleID: number,
-    reservations: Reservation[]
+    reservations: UserReservation[]
 }

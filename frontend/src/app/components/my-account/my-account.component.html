@@ -1,0 +1,29 @@
+<div *ngIf="userService.isLoggedIn() && userService.userData !== null">
+    <p>{{userService.userData.username}}</p>
+    <hr>
+    <div *ngFor="let userReservation of userService.userData.reservations">
+        <div *ngFor="let reservation of reservationsList">
+            <span *ngIf="reservation._id == userReservation.reservation">
+                <p>{{reservation._id}}</p>
+                <p>from: {{reservation.date}}</p>
+                <p>number of days: {{reservation.numberOfDays}}</p>
+                <p>amount: {{reservation.amount}}$</p>
+                ROOMS:
+                <div *ngFor="let userRoom of reservation.rooms">
+                    <div *ngFor="let room of roomsList">
+                        <span *ngIf="room._id == userRoom.room">
+                            <p>quantity: {{userRoom.quantity}}</p>
+                            <p>{{room.name}}</p>
+                            <img src="{{room.imageLink}}" width="100px">
+                        </span>
+                    </div>
+                </div>
+
+                <hr>
+            </span>
+
+        </div>
+
+
+    </div>
+</div>

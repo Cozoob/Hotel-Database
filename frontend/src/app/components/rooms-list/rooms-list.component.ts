@@ -1,6 +1,8 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Room } from 'src/app/models/room';
 import { RoomsService } from 'src/app/services/rooms.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-rooms-list',
@@ -11,7 +13,7 @@ export class RoomsListComponent implements OnInit {
   roomsList: Room[] = []
   loading: boolean = true
 
-  constructor(private roomService: RoomsService, private cd: ChangeDetectorRef) {
+  constructor(public roomService: RoomsService, private cd: ChangeDetectorRef, public userService: UserService, private router: Router, private activatedRoute: ActivatedRoute) {
     roomService.getLoading$().subscribe(
       next => {
         this.loading = next
@@ -30,5 +32,11 @@ export class RoomsListComponent implements OnInit {
   removeRoom(room: Room) {
     this.roomService.removeRoom(room._id)
   }
+
+  reserve(room: Room) {
+    // this.roomService.setCurrentRoom()
+    this.router.navigate(['/rooms-list/' + room._id], { relativeTo: this.activatedRoute })
+  }
+
 
 }
