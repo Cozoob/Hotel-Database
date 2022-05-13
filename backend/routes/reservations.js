@@ -12,7 +12,7 @@ router.post('/:id', async (req, res) => {
         const body = req.body
         const id = req.params.id
         const reservation = await Reservation.create({
-            rooms: body.rooms,
+            room: body.room,
             amount: body.amount,
             date: body.date,
             numberOfDays: body.numberOfDays

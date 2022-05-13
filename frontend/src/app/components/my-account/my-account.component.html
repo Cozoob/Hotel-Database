@@ -8,15 +8,13 @@
                 <p>from: {{reservation.date}}</p>
                 <p>number of days: {{reservation.numberOfDays}}</p>
                 <p>amount: {{reservation.amount}}$</p>
-                ROOMS:
-                <div *ngFor="let userRoom of reservation.rooms">
-                    <div *ngFor="let room of roomsList">
-                        <span *ngIf="room._id == userRoom.room">
-                            <p>quantity: {{userRoom.quantity}}</p>
-                            <p>{{room.name}}</p>
-                            <img src="{{room.imageLink}}" width="100px">
-                        </span>
-                    </div>
+                ROOM:
+                <div *ngFor="let room of roomsList">
+
+                    <span *ngIf="room._id == reservation.room">
+                        <p>{{room.name}}</p>
+                        <img src="{{room.imageLink}}" width="100px">
+                    </span>
                 </div>
 
                 <hr>

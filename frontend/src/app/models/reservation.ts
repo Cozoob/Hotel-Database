@@ -1,8 +1,6 @@
-import { RoomReservation } from "./room-reservation";
-
 export interface Reservation {
     _id: string,
-    rooms: RoomReservation[],
+    room: string,
     amount: number,
     date: string,
     numberOfDays: number,
