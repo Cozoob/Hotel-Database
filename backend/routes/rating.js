@@ -14,19 +14,23 @@ router.post('/:id', async (req, res) => {
         const id = req.params.id
 
         if (!mongoose.isValidObjectId(id)) {
-            return res.status(404).send("No room found with given ID.");
+            res.status(404).send("No room found with given ID.")
+            return
         }
 
         if (!mongoose.isValidObjectId(body.reservation)) {
-            return res.status(404).send("No reservation found with given ID.");
+            res.status(404).send("No reservation found with given ID.")
+            return
         }
 
         if (!mongoose.isValidObjectId(body.user)) {
-            return res.status(404).send("No user found with given ID.");
+            res.status(404).send("No user found with given ID.")
+            return
         }
 
         if (!body.rating || !(body.rating >= 0 && body.rating <= 5)) {
-            return res.status(400).send("Wrong rating data.");
+            res.status(400).send("Wrong rating data.")
+            return
         }
 
         const reservation = await Reservation.find({
@@ -36,7 +40,8 @@ router.post('/:id', async (req, res) => {
         })
 
         if (reservation == null) {
-            return res.status(404).send("Can't find reservation with matching user id and room id")
+            res.status(404).send("Can't find reservation with matching user id and room id")
+            return
         }
 
         // for every reservation only one rate can be added
@@ -46,7 +51,8 @@ router.post('/:id', async (req, res) => {
 
 
         if (ratingExist.length > 0) {
-            return res.status(404).send("Can't add more than one rate to one reservation")
+            res.status(404).send("Can't add more than one rate to one reservation")
+            return
         }
 
         const rating = await Rating.create({
@@ -56,21 +62,24 @@ router.post('/:id', async (req, res) => {
             rating: body.rating
         })
 
-        const calculatedRating = await calculateRoomRating(id);
+        // const calculatedRating = await calculateRoomRating(id);
 
-        return res.status(201).send({
-            rating: rating,
-            ratingTotal: calculatedRating.rating,
-            ratingsAmount: calculatedRating.amountOfRatings
-        });
+        return res.status(200).send({
+            rating: rating
+        }
+            // "Rate"
+            // ratingTotal: calculatedRating.rating,
+            // ratingsAmount: calculatedRating.amountOfRatings
+        );
 
     } catch (err) {
         console.log(err);
-        return res.status(500).send("Something not ok.")
+        res.status(500).send("Something not ok.")
     }
 });
 
 
+// delere rate with given id
 router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id
@@ -98,8 +107,9 @@ router.delete('/:id', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        const calculatedRating = await calculateEveryRoomRating()
-        return res.status(200).json(calculatedRating);
+        // const calculatedRating = await calculateEveryRoomRating()
+        const rating = await Rating.find();
+        return res.status(200).json(rating);
     }
     catch (err) {
         return res.status(500).send("Something went wrong!");

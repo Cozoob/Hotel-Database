@@ -13,7 +13,16 @@
                 <img src="{{room.imageLink}}" width="100px">
             </span>
         </div>
+        <br>
         <button (click)="removeReservation(reservation, user._id)">Remove</button>
+        <br>
+        <br>
+        <form [formGroup]="rateForm">
+            <select class="form-control" formControlName="item" (change)="itemChoice()">
+                <option *ngFor="let item of items" [value]="item">{{item}}</option>
+            </select>
+            <button (click)="addRating(reservation.room, user._id, reservation._id, item)">Add rate</button>
+        </form>
         <hr>
     </div>
 </div>

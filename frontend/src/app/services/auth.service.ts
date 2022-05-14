@@ -86,7 +86,7 @@ export class AuthService {
         this.setSession(next)
       },
       error => {
-        alert("er")
+        // alert("er")
         this.logout()
       }
     )
