@@ -4,6 +4,8 @@ import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { Reservation } from '../models/reservation';
 import { Room } from '../models/room';
 import { ApiConnectionService } from './api-connection.service';
+import { AuthService } from './auth.service';
+import { UserService } from './user.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +19,14 @@ export class ReservationsService {
   selectedReservations: Set<Reservation> = new Set<Reservation>()
   observableSelectedReservations = new BehaviorSubject<Set<Reservation>>(this.selectedReservations)
 
-  constructor(private http: HttpClient, private api: ApiConnectionService) {
+  constructor(private http: HttpClient, private api: ApiConnectionService, private userService: UserService, private authService: AuthService) {
+    this.authService.getSessionStatus$().subscribe(
+      _ => {
+        this.loading$.next(true)
+        this.update()
+      }
+    )
+
     this.loading$.next(true)
     this.update()
   }
@@ -62,50 +71,36 @@ export class ReservationsService {
   }
 
 
-  // async addReservation(rooms: Room[], amount: number, date: string, numberOfDays: number) {
-  //   let Reservation = {
-  //     rooms: rooms,
-  //     amount: amount,
-  //     date: date,
-  //     numberOfDays: numberOfDays
-  //   }
+  async addReservation(room: string, roomPrice: number, date: Date, numberOfDays: number) {
+    let user = this.userService.getUserData()
+    if (user === null)
+      return
 
-  //   let headers = new HttpHeaders({ "Content-Type": "application/json" })
-  //   let newReservation: Reservation = await firstValueFrom(this.http.post<Reservation>(this.api.RESERVATIONS_URL, Reservation, { headers }))
-  //   this.allReservations.push(newReservation)
-  //   this.observableAllReservations.next(this.allReservations)
-  // }
+    let Reservation = {
+      room: room,
+      amount: roomPrice * numberOfDays,
+      date: date,
+      numberOfDays: numberOfDays,
+      user: user._id
+    }
 
-
-  // removeReservation(id: string) {
-  //   this.http.delete(this.api.RESERVATIONS_URL + `/${id}`).subscribe({
-  //     next: (res) => {
-  //       for (let i = 0; i < this.allReservations.length; i++) {
-  //         if (this.allReservations[i]._id === id) {
-  //           this.unselectReservation(this.allReservations[i]._id)
-  //           this.allReservations.splice(i, 1)
-  //         }
-  //       }
-  //     }
-  //   })
-  // }
+    let headers = new HttpHeaders({ "Content-Type": "application/json" })
+    let newReservation: Reservation = await firstValueFrom(this.http.post<Reservation>(this.api.RESERVATIONS_URL + `/${user._id}`, Reservation, { headers }))
+    this.allReservations.push(newReservation)
+    this.observableAllReservations.next(this.allReservations)
+  }
 
 
-  // unselectReservation(id: string) {
-  //   let Reservation = this.getReservationWithID(id)
-  //   if (Reservation != null) {
-  //     this.selectedReservations.delete(Reservation)
-  //     this.observableSelectedReservations.next(this.selectedReservations)
-  //   }
-  // }
+  removeReservation(rid: string, uid: string) {
+    this.http.delete(this.api.RESERVATIONS_URL + `/${uid}/${rid}`).subscribe({
+      next: (res) => {
+        for (let i = 0; i < this.allReservations.length; i++) {
+          if (this.allReservations[i]._id === rid) {
+            this.allReservations.splice(i, 1)
+          }
+        }
+      }
+    })
+  }
 
-
-  // getReservationWithID(id: string): Reservation | null {
-  //   for (let Reservation of this.allReservations) {
-  //     if (Reservation._id === id) {
-  //       return Reservation
-  //     }
-  //   }
-  //   return null
-  // }
 }

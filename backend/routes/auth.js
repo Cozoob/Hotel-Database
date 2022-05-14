@@ -54,14 +54,13 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const body = req.body
-        if (!((body.username || body.email) && body.password))
+        if (!(body.email && body.password))
             return res.status(400).send({ login: false, message: "Invalid data" })
 
-        const username = body.username
         const email = body.email
         const password = body.password
 
-        User.findOne({ $or: [{ username: username }, { email: email }] }, { passwordHash: 1, _id: 1, username: 1, email: 1, roleID: 1, reservations: 1 }, {}, async (err, user) => {
+        User.findOne({ email: email }, { passwordHash: 1, _id: 1, username: 1, email: 1, roleID: 1, reservations: 1 }, {}, async (err, user) => {
             if (err) return res.status(500).send("Something went wrong")
             if (!user) return res.status(400).send({ login: false, message: "Invalid data" })
 

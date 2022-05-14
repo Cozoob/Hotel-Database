@@ -1,4 +1,6 @@
 <div>
+    <button class="backBtn" (click)="router.navigate(['admin'])">Back</button>
+
     <p class="page-name">Add room</p>
     <form [formGroup]="roomForm" (ngSubmit)="onSubmit()">
 

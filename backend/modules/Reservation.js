@@ -10,12 +10,16 @@ const reservationSchema = new mongoose.Schema({
         required: true
     },
     date: {
-        type: String,
+        type: Date,
         required: true
     },
     numberOfDays: {
         type: Number,
         required: true
+    },
+    user: {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
     }
 });
 

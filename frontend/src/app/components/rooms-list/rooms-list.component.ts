@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { AfterViewChecked, ChangeDetectorRef, Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Room } from 'src/app/models/room';
 import { RoomsService } from 'src/app/services/rooms.service';
@@ -9,7 +9,7 @@ import { UserService } from 'src/app/services/user.service';
   templateUrl: './rooms-list.component.html',
   styleUrls: ['./rooms-list.component.css']
 })
-export class RoomsListComponent implements OnInit {
+export class RoomsListComponent implements AfterViewChecked, OnInit, OnChanges {
   roomsList: Room[] = []
   loading: boolean = true
 
@@ -29,12 +29,15 @@ export class RoomsListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  removeRoom(room: Room) {
-    this.roomService.removeRoom(room._id)
+  ngAfterViewChecked() {
+    this.cd.detectChanges()
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.cd.detectChanges()
   }
 
   reserve(room: Room) {
-    // this.roomService.setCurrentRoom()
     this.router.navigate(['/rooms-list/' + room._id], { relativeTo: this.activatedRoute })
   }
 

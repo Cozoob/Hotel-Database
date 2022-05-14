@@ -31,8 +31,8 @@ router.post('/', async (req, res, next) => {
             return
 
         res.status(200).json({
-            message: "Room created successfully",
-            room: room
+            // message: "Room created successfully",
+            room
         });
 
     } catch (err) {

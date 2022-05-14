@@ -10,7 +10,8 @@ const isAdmin = require('../middleware/auth/isAdmin')
 const isHimself = require('../middleware/auth/isHimself')
 
 // READ
-router.get('/', isAuthenticated, isAdmin, async (req, res) => {
+// trzeba dodać isAuthenticated, isAdmin
+router.get('/', async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).json(users);
@@ -21,7 +22,7 @@ router.get('/', isAuthenticated, isAdmin, async (req, res) => {
     }
 });
 
-router.get('/:id', isAuthenticated, isHimself("id"),async (req, res) => {
+router.get('/:id', isAuthenticated, isHimself("id"), async (req, res) => {
     try {
 
         if (!mongoose.isValidObjectId(req.params.id)) {

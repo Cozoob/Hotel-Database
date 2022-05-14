@@ -3,6 +3,8 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { Room } from '../models/room';
 import { ApiConnectionService } from './api-connection.service';
+import { AuthService } from './auth.service';
+import { ThrowStmt } from '@angular/compiler';
 
 
 @Injectable({
@@ -17,15 +19,32 @@ export class RoomsService {
   selectedRooms: Set<Room> = new Set<Room>()
   observableSelectedRooms = new BehaviorSubject<Set<Room>>(this.selectedRooms)
 
-  constructor(private http: HttpClient, private api: ApiConnectionService) {
+  constructor(private http: HttpClient, private api: ApiConnectionService, private authService: AuthService) {
+    this.authService.getSessionStatus$().subscribe(
+      _ => {
+        this.loading$.next(true)
+        this.update()
+      }
+    )
     this.loading$.next(true)
     this.update()
+
+    this.getRooms().subscribe(
+      next => {
+        this.allRooms = next
+      }
+    )
+  }
+
+  getRoomData() {
+    return this.allRooms
   }
 
   update() {
-    this.getAllRooms().subscribe(next => {
-      this.updateServiceAndObservers(next)
-    },
+    this.getAllRooms().subscribe(
+      next => {
+        this.updateServiceAndObservers(next)
+      },
       error => {
         this.loading$.next(false)
       }
@@ -130,5 +149,9 @@ export class RoomsService {
     return subject
   }
 
+}
 
+interface Response {
+  message: string,
+  room: Room
 }

@@ -13,6 +13,11 @@ import { SignInComponent } from './components/sign-in/sign-in.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyAccountComponent } from './components/my-account/my-account.component';
+import { RoomReservationComponent } from './components/room-reservation/room-reservation.component';
+import { AdminComponent } from './components/admin/admin.component';
+import { DeleteReservationsComponent } from './components/delete-reservations/delete-reservations.component';
+import { DeleteUserComponent } from './components/delete-user/delete-user.component';
+import { DeleteRoomComponent } from './components/delete-room/delete-room.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +30,12 @@ import { MyAccountComponent } from './components/my-account/my-account.component
     SignInComponent,
     SignUpComponent,
     MyAccountComponent,
+    RoomReservationComponent,
+    AdminComponent,
+    DeleteReservationsComponent,
+    DeleteUserComponent,
+    DeleteRoomComponent,
+
   ],
   imports: [
     BrowserModule,

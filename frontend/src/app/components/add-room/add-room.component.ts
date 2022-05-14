@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { map } from 'rxjs';
 import { RoomsService } from 'src/app/services/rooms.service';
 
 @Component({
@@ -17,7 +19,7 @@ export class AddRoomComponent implements OnInit {
     imageLink: new FormControl(null, Validators.required)
   });
 
-  constructor(private roomService: RoomsService) { }
+  constructor(private roomService: RoomsService, public router: Router,) { }
 
   ngOnInit(): void {
   }
@@ -32,7 +34,7 @@ export class AddRoomComponent implements OnInit {
       alert("Room created")
     }
     else {
-      alert("Dish cant be added")
+      alert("Room can't be added")
     }
 
   }

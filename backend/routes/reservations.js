@@ -15,7 +15,8 @@ router.post('/:id', async (req, res) => {
             room: body.room,
             amount: body.amount,
             date: body.date,
-            numberOfDays: body.numberOfDays
+            numberOfDays: body.numberOfDays,
+            user: id
         })
         const user = await User.findByIdAndUpdate(id, { $addToSet: { reservations: { reservation: reservation._id } } })
 
@@ -147,6 +148,5 @@ router.delete('/:uid/:rid', async (req, res) => {
         return res.status(500).send("Something went wrong!");
     }
 })
-
 
 module.exports = router

@@ -1,8 +1,11 @@
-<div *ngIf="user !== null">
-    {{user.username}}
-    <hr>
-    <div *ngFor="let reservation of myReservations()">
+<button class="backBtn" (click)="router.navigate(['admin'])">Back</button>
+
+ALL RESERVATIONS:
+<hr>
+<div>
+    <div *ngFor="let reservation of reservationsList">
         <p>reservation id: {{reservation._id}}</p>
+        <p>user id: {{reservation.user}}</p>
         <p>from: {{formatDate(reservation.date)}}</p>
         <p>number of days: {{reservation.numberOfDays}}</p>
         <p>amount: {{reservation.amount}}$</p>
@@ -13,7 +16,7 @@
                 <img src="{{room.imageLink}}" width="100px">
             </span>
         </div>
-        <button (click)="removeReservation(reservation, user._id)">Remove</button>
+        <button (click)="removeReservation(reservation, reservation.user)">Remove</button>
         <hr>
     </div>
 </div>

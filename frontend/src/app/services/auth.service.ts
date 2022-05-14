@@ -26,6 +26,10 @@ export class AuthService {
     }
   }
 
+  getSessionStatus$() {
+    return this.sessionStatus$.asObservable()
+  }
+
   getLoggedUser$() {
     return this.loggedUser$.asObservable()
   }
@@ -83,7 +87,7 @@ export class AuthService {
       },
       error => {
         alert("er")
-        // this.logout()
+        this.logout()
       }
     )
   }

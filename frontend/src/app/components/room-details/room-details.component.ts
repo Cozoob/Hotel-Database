@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Room } from 'src/app/models/room';
+import { ReservationsService } from 'src/app/services/reservations.service';
 import { RoomsService } from 'src/app/services/rooms.service';
 
 @Component({
@@ -14,7 +16,7 @@ export class RoomDetailsComponent implements OnInit {
   loading: boolean = true
   id: string | null = null
 
-  constructor(private roomService: RoomsService, public router: Router, private activatedRoute: ActivatedRoute) {
+  constructor(private roomService: RoomsService, public router: Router, private activatedRoute: ActivatedRoute, private reservationService: ReservationsService) {
 
     activatedRoute.paramMap.subscribe(async params => {
       this.id = <string>params.get('id')
@@ -28,6 +30,11 @@ export class RoomDetailsComponent implements OnInit {
         })
     })
   }
+
+  reservationForm = new FormGroup({
+    from: new FormControl(null, Validators.required),
+    noDays: new FormControl(null, Validators.required),
+  })
 
   ngOnInit() {
   }

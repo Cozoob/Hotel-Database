@@ -1,3 +1,5 @@
+<button class="backBtn" (click)="router.navigate(['admin'])">Back</button>
+
 <div class="roomsContainer">
     <div *ngFor="let room of roomsList" class="room">
         <img src="{{room.imageLink}}">
@@ -6,7 +8,7 @@
             <div class="room-rest">
                 <div>{{room.price}} $</div>
                 <div>max available: {{room.maxAvailableNumber}}</div>
-                <button *ngIf="userService.isLoggedIn()" (click)="reserve(room)">Reserve</button>
+                <button (click)="removeRoom(room)">Remove</button>
             </div>
         </div>
     </div>

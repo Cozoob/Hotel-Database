@@ -1,0 +1,12 @@
+<button class="backBtn" (click)="router.navigate(['admin'])">Back</button>
+<hr>
+<div *ngFor="let user of usersList">
+    <p>user id: {{user._id}}</p>
+    <p>username: {{user.username}}</p>
+    <p>email: {{user.email}}</p>
+    <p *ngIf="user.roleID == 0">role: admin</p>
+    <p *ngIf="user.roleID == 1">role: employee</p>
+    <p *ngIf="user.roleID == 2">role: client</p>
+    <button (click)="deleteUser(user)">Remove</button>
+    <hr>
+</div>
