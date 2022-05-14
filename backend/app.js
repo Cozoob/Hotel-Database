@@ -31,12 +31,14 @@ const authRoute = require('./routes/auth');
 const userRoute = require('./routes/user');
 const roomsRoute = require('./routes/rooms');
 const reservationsRoute = require('./routes/reservations');
+const ratingRoute = require('./routes/rating');
 
 
 app.use('/', authRoute);
 app.use('/user', userRoute);
 app.use('/rooms', roomsRoute);
 app.use('/reservations', reservationsRoute);
+app.use('/rating', ratingRoute);
 
 // ROUTES
 app.get('/', ((req, res) => {

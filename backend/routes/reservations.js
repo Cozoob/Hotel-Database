@@ -46,7 +46,7 @@ router.get('/:id', async (req, res) => {
 
         // zostawiam na przyszłość żeby nie tracić tyle czasu szukając na stacku
         //E11000 duplicate key error collection
-        //Reservation.collection.dropIndexes()
+        // Reservation.collection.dropIndexes()
 
         res.status(200).json({
             status: 'success',
