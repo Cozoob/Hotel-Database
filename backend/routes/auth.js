@@ -75,7 +75,7 @@ router.post('/login', async (req, res) => {
             if (!refreshToken)
                 throw new Error("Max amount of finding refresh token tries exceeded")
 
-
+            user.passwordHash = undefined
             return res.status(200).json({ login: true, message: "Logged in successfully", access: accessToken, refresh: refreshToken, user: user })
         })
 
