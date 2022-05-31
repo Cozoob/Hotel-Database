@@ -10,8 +10,7 @@ const isAdmin = require('../middleware/auth/isAdmin')
 const isHimself = require('../middleware/auth/isHimself')
 
 // READ
-// trzeba dodać isAuthenticated, isAdmin
-router.get('/', async (req, res) => {
+router.get('/', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const users = await User.find();
         res.status(200).json(users);

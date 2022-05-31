@@ -84,16 +84,7 @@ export class UserService {
     }
   }
 
-  // nwm czemu ale nie działa to przekazanie access tokenu w header,
-  // tymczasowo z module user w backendzie usunęłam konieczność dodania isAuthenicated, isAdmin
   private getAllUsers(): Observable<User[]> {
-    let access = this.tokenService.getAccessToken()
-    // alert(access)
-
-    // if (access != null) {
-    // let headers = new HttpHeaders({ "Authorization": `${access}` })
-    // return this.http.get<User[]>(this.api.USER_URL, { headers })
-    // }
     return this.http.get<User[]>(this.api.USER_URL)
   }
 

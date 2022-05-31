@@ -1,7 +1,7 @@
 import { HttpBackend, HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, tap } from 'rxjs';
 import { User } from '../models/user';
 import { ApiConnectionService } from './api-connection.service';
 import { TokenService } from './token.service';
@@ -86,10 +86,19 @@ export class AuthService {
         this.setSession(next)
       },
       error => {
-        // alert("er")
         this.logout()
       }
     )
+  }
+
+  refreshToken() {
+    let headers = new HttpHeaders({
+      "Content-Type": "application/json"
+    })
+    return this.http.post<TokenResponse>(ApiUrls.REFRESH_TOKEN_URL, { refresh: this.tokenService.getRefreshToken() }, { headers: headers })
+      .pipe(tap((tokens: TokenResponse) => {
+        this.tokenService.setTokens(tokens)
+      }))
   }
 }
 
@@ -111,4 +120,9 @@ interface Response {
 interface RegisterResponse {
   registration: boolean,
   error: string
+}
+
+interface TokenResponse {
+  access: string,
+  refresh: string
 }
