@@ -23,16 +23,17 @@ export class SignInComponent implements OnInit {
   onSubmit() {
     let form = this.signInForm.value;
 
-    this.authService.login(form.eMail, form.password).subscribe(
-      next => {
+    this.authService.login(form.eMail, form.password).subscribe({
+      next: next => {
         this.authService.setSession(next)
-        this.router.navigateByUrl('/my-account')
+        this.router.navigateByUrl('/my-account').then()
       },
-      error => {
+      error: err => {
         this.signInForm.reset()
         alert("Incorrect data")
       }
-    )
+    })
+
   }
 
 }

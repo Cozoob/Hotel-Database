@@ -6,9 +6,12 @@ const Room = require('../modules/Room');
 const RoleEnum = require('../enums/Role');
 
 // wszystko zakomentowane trzeba dodać jak stworzymy logowanie i weryfikacje użytkownika
+const isAuthenticated = require('../middleware/auth/isAuthenticated')
+const isAdmin = require('../middleware/auth/isAdmin')
+const isHimself = require('../middleware/auth/isHimself')
 
 //CREATE
-router.post('/', async (req, res, next) => {
+router.post('/', isAuthenticated, isAdmin, async (req, res, next) => {
     try {
         const body = req.body;
         let validationFailed = false;
@@ -56,7 +59,7 @@ router.get('/', async (req, res) => {
 })
 
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', isAuthenticated, async (req, res) => {
     try {
         const id = req.params.id
 

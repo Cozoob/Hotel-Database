@@ -11,7 +11,7 @@ const randToken = require('rand-token')
 require('dotenv/config')
 
 const REFRESH_TOKEN_LENGTH = 256
-const ACCESS_EXPIRES_IN = 60 * 60 * 24 //todo 60*5
+const ACCESS_EXPIRES_IN = 60 //todo 60*5
 
 // AUTH
 router.post('/register', async (req, res) => {
@@ -120,8 +120,6 @@ router.post('/token/reject', async (req, res) => {
     try {
 
         let refreshToken = req.body.refresh
-        console.log("yshjdk")
-        console.log(refreshToken)
         await deleteRefreshToken(refreshToken)
         res.status(204).send("Logged out successfully")
 

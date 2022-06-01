@@ -4,13 +4,13 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class ApiConnectionService {
-  BASE_URL = "http://localhost:3000"
-  ROOMS_URL = "http://localhost:3000/rooms"
-  USER_URL = "http://localhost:3000/user"
-  SIGNIN_URL = "http://localhost:3000/login"
-  SIGNUP_URL = "http://localhost:3000/register"
-  RESERVATIONS_URL = "http://localhost:3000/reservations"
-  REFRESH_TOKEN_URL = 'http://localhost:3000/token/refresh'
-  RATING_URL = 'http://localhost:3000/rating'
+  readonly BASE_URL = "http://localhost:8000/"
+  readonly ROOMS_URL = this.BASE_URL + "rooms"
+  readonly USER_URL = this.BASE_URL + "user"
+  readonly SIGNIN_URL = this.BASE_URL + "login"
+  readonly SIGNUP_URL = this.BASE_URL + "register"
+  readonly RESERVATIONS_URL = this.BASE_URL + "reservations"
+  readonly REFRESH_TOKEN_URL = this.BASE_URL + "token/refresh"
+  readonly RATING_URL = this.BASE_URL + "rating"
   constructor() { }
 }

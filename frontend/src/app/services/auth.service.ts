@@ -95,6 +95,7 @@ export class AuthService {
     let headers = new HttpHeaders({
       "Content-Type": "application/json"
     })
+    console.log(ApiUrls.REFRESH_TOKEN_URL)
     return this.http.post<TokenResponse>(ApiUrls.REFRESH_TOKEN_URL, { refresh: this.tokenService.getRefreshToken() }, { headers: headers })
       .pipe(tap((tokens: TokenResponse) => {
         this.tokenService.setTokens(tokens)
