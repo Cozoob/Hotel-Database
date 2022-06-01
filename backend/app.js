@@ -2,6 +2,8 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require("body-parser")
 const app = express();
+const jwt = require("jsonwebtoken");
+const Log = require('./modules/Log');
 require('dotenv/config')
 
 // MIDDLEWARE
@@ -19,9 +21,28 @@ app.use(async (req, res, next) => {
     return next()
 })
 
+// logs
+app.use(async (req, res, next) => {
+    let date = new Date(Date.now())
+    console.log(req.method + " " + req.url + " at " + date)
 
-app.use((req, res, next) => {
-    console.log(req.method + " " + req.url + " at " + new Date(Date.now()))
+    let newLog = {
+        method: req.method,
+        url: req.url,
+        date: date,
+    }
+
+    jwt.verify(
+        req.headers.authorization && req.headers.authorization.split(' ').length === 2 ? req.headers.authorization.split(' ')[1] : undefined,
+        process.env.JWT_SECRET,
+        {},
+        async (err, decoded) => {
+            if (err) Log.create(newLog).then()
+
+            newLog.user = decoded
+            Log.create(newLog).then()
+    })
+
     return next()
 })
 
