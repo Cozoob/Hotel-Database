@@ -7,8 +7,9 @@ const RoleEnum = require('../enums/Role');
 const Reservation = require('../modules/Reservation');
 const Room = require('../modules/Room');
 
+const isAuthenticated = require('../middleware/auth/isAuthenticated')
 
-router.post('/:id', async (req, res) => {
+router.post('/:id', isAuthenticated, async (req, res) => {
     try {
         const body = req.body
         const id = req.params.id
@@ -36,7 +37,7 @@ router.post('/:id', async (req, res) => {
         const reservation = await Reservation.find({
             room: id,
             user: body.user,
-            _id: body.reservation
+            _id: body.reservationuserIDParamName
         })
 
         if (reservation == null) {
@@ -80,7 +81,7 @@ router.post('/:id', async (req, res) => {
 
 
 // delere rate with given id
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', isAuthenticated, async (req, res) => {
     try {
         const id = req.params.id
 
