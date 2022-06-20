@@ -15,7 +15,7 @@ Skład grupy: Rafał Kamiński, Marcin Kozub, Barbara Gaweł-Kucab
 ---
 
  ### Zasady działania:
- * wygląd strony dla niezalogowanego użytkownika. Każdy z pokoi ma swoją ocenę, oceny są dodawane przez użytkowników, którzy zarezerwowali dany pokój. Ocena to liczba całkowita z zakresu 1-5. Na podstawie wszystkich ocen jest obliczana średnia ocena pokoju. Na stronie znajduje się kilka dostępnych rodzai pokoi, każdy z nich ma ograniczoną liczbę jaka jest dostępna w danym momencie
+ * wygląd strony dla niezalogowanego użytkownika. Każdy z pokoi ma swoją ocenę, oceny są dodawane przez użytkowników, którzy zarezerwowali dany pokój. Ocena to liczba całkowita z zakresu 1-5. Na podstawie wszystkich ocen jest obliczana średnia ocena pokoju. Na stronie znajduje się kilka dostępnych rodzajów pokoi, każdy z nich ma ograniczoną liczbę jaka jest dostępna w danym momencie
 
  ![screen](imgs/unlogged-user-view.png)
 
