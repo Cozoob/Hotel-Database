@@ -7,17 +7,17 @@ module.exports = function (userIDParamName, reservationIDParamName) {
 
             let reqUserID = req.params[userIDParamName]
             if (!reqUserID)
-                throw new Error("Expected req.param."+userIDParamName+"; Provide valid requested userID key")
+                throw new Error("Expected req.param." + userIDParamName + "; Provide valid requested userID key")
 
             let reqReservationID = req.params[reservationIDParamName]
             if (!reqReservationID)
-                throw new Error("Expected req.param."+reqReservationID+"; Provide valid requested reservationID key")
+                throw new Error("Expected req.param." + reqReservationID + "; Provide valid requested reservationID key")
 
             if (!res.userData)
                 throw new Error("Expected res.userData; Check isAuthorized first")
 
-            if (!reqReservationID in res.userData.reservations || res.userData.roleID !== roleEnum.EMPLOYEE_ID || res.userData.roleID !== roleEnum.ADMIN_ID)
-                return res.status(403).send("Not authorized")
+            // if (!reqReservationID in res.userData.reservations || res.userData.roleID !== roleEnum.EMPLOYEE_ID || res.userData.roleID !== roleEnum.ADMIN_ID)
+            //     return res.status(403).send("Not authorized")
 
             return next()
 

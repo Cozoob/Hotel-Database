@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const router = express.Router();
 const Reservation = require('../modules/Reservation')
 const User = require('../modules/User');
+const Room = require('../modules/Room');
 
 const isAuthenticated = require('../middleware/auth/isAuthenticated')
 const isReservationOwner = require('../middleware/auth/isReservationOwner')
@@ -23,6 +24,15 @@ router.post('/:id', isAuthenticated, async (req, res) => {
             numberOfDays: body.numberOfDays,
             user: id
         })
+
+        if (!isFutureReservation(body.date)) {
+            return res.status(400).send("Can'create reservation in past")
+        }
+
+        if (!isRoomAvailable(body.room, body.date, body.numberOfDays)) {
+            return res.status(400).send("All this rooms are booked in this term")
+        }
+
         const user = await User.findByIdAndUpdate(id, { $addToSet: { reservations: { reservation: reservation._id } } })
 
         res.status(200).json({
@@ -75,10 +85,11 @@ router.get('/:uid/:rid', isAuthenticated, isReservationOwnerOrEmployeeOrAdmin("u
             return
         }
         const reservation = await Reservation.findById(reservationId)
+        const sortedReservations = reservation.sort((a, b) => b.date - a.date)
 
         res.status(200).json({
             status: 'success',
-            reservation: reservation
+            reservation: sortedReservations
         })
     }
     catch (err) {
@@ -92,7 +103,8 @@ router.get('/:uid/:rid', isAuthenticated, isReservationOwnerOrEmployeeOrAdmin("u
 router.get('/', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const reservation = await Reservation.find();
-        res.status(200).json(reservation);
+        const sortedReservations = reservation.sort((a, b) => a.date - b.date)
+        res.status(200).json(sortedReservations);
     }
     catch (err) {
         console.log(err);
@@ -149,5 +161,45 @@ router.delete('/:uid/:rid', isAuthenticated, isReservationOwnerOrEmployeeOrAdmin
         return res.status(500).send("Something went wrong!");
     }
 })
+
+
+function isFutureReservation(date) {
+    let today = new Date()
+    let todayDate = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate()
+    return ((new Date(date).getTime() - new Date(todayDate).getTime()) / 86400000) >= 0
+}
+
+async function isRoomAvailable(room, from, noDays) {
+    let cnt = 0
+
+    //new reservation start and end date
+    from = new Date(from)
+    let to = new Date(from)
+    let newStart = from.setDate(from.getDate())
+    let newEnd = to.setDate(to.getDate() + noDays)
+
+    const reservations = await Reservation.find();
+
+
+    for (let reservation of reservations) {
+        if (reservation.room.valueOf() === room) {
+            console.log(reservation)
+            // creted reservation start and end date
+            let fromR = new Date(reservation.date)
+            let toR = new Date(reservation.date)
+            let start = fromR.setDate(fromR.getDate())
+            let end = toR.setDate(toR.getDate() + reservation.numberOfDays)
+
+            if ((start < newEnd && newEnd <= end) || (start <= newStart && newStart < end) || (start <= newStart && newEnd <= end)) {
+                cnt++
+            }
+
+        }
+    }
+    const roomObject = await Room.findById(room)
+    if (cnt < roomObject.maxAvailableNumber)
+        return true
+    return false
+}
 
 module.exports = router
