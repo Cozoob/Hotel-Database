@@ -56,30 +56,25 @@ export class RoomsListComponent implements AfterViewChecked, OnInit, OnChanges {
     this.router.navigate(['/rooms-list/' + room._id], { relativeTo: this.activatedRoute })
   }
 
-  calculateRoomRating(id: string) {
-    let sum = 0
-    let arr = this.ratingsList.filter(res => res.room === id)
-
-    for (let rating of arr) {
-      sum += rating.rating
+  findRate(id: string) {
+    let arr = this.ratingsList.find(x => x.room === id)
+    if (arr == null) {
+      return null;
     }
-
-    let avg = 0
-    if (sum != 0) {
-      avg = sum / arr.length
-    }
-
     return {
-      room: id,
-      rating: avg,
-      amountOfRatings: arr.length
+      room: arr.room,
+      rating: arr.rating,
+      amountOfRatings: arr.amountOfRatings
     }
   }
 
+
   getRoomRatingsList() {
-    let result: RoomRate[] = []
+    let result = []
     for (let room of this.roomsList) {
-      result.push(this.calculateRoomRating(room._id))
+      if (this.findRate(room._id) != null) {
+        result.push(this.findRate(room._id))
+      }
     }
 
     return result

@@ -84,16 +84,12 @@ export class RoomReservationComponent implements OnInit {
           alert("Reservation created")
         }
         else {
-          alert("Not enough available rooms in this term")
+          alert("All this rooms are booked in this term")
         }
-
       }
       else {
-        alert("You can't create reservation for the day in the past ")
+        alert("Can'create reservation in past")
       }
-    }
-    else {
-      alert("Reservation cant be added")
     }
   }
 }

@@ -7,7 +7,7 @@
                 <div>{{room.price}} $</div>
                 <div>max available: {{room.maxAvailableNumber}}</div>
                 <div *ngFor="let rating of getRoomRatingsList()">
-                    <div *ngIf="rating.room == room._id">
+                    <div *ngIf="rating != null && rating.room == room._id">
                         <div>average rate: {{rating.rating}} ({{rating.amountOfRatings}})</div>
                     </div>
                 </div>

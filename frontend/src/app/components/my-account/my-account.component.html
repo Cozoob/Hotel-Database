@@ -1,6 +1,7 @@
 <div *ngIf="user !== null">
     {{user.username}}
     <hr>
+
     <div *ngFor="let reservation of myReservations()">
         <p>reservation id: {{reservation._id}}</p>
         <p>from: {{formatDate(reservation.date)}}</p>

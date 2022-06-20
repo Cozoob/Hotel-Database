@@ -3,5 +3,6 @@ export interface Rate {
     room: string,
     user: string,
     reservation: string,
-    rating: number
+    rating: number,
+    amountOfRatings: number,
 }

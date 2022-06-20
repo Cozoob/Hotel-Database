@@ -66,13 +66,14 @@ export class MyAccountComponent implements OnInit {
     })
   }
 
+
   myReservations() {
     let myReservationsList: Reservation[] = []
     if (this.user === null)
       return myReservationsList
 
-    for (let myRes of this.user.reservations) {
-      for (let reservation of this.reservationsList) {
+    for (let reservation of this.reservationsList) {
+      for (let myRes of this.user.reservations) {
         if (myRes.reservation === reservation._id)
           myReservationsList.push(reservation)
       }
