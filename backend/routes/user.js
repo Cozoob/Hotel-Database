@@ -8,6 +8,7 @@ const bcrypt = require("bcrypt");
 const isAuthenticated = require('../middleware/auth/isAuthenticated')
 const isAdmin = require('../middleware/auth/isAdmin')
 const isHimself = require('../middleware/auth/isHimself')
+const isHimselfOrAdmin = require('../middleware/auth/isHimselfOrAdmin')
 
 // READ
 router.get('/', isAuthenticated, isAdmin, async (req, res) => {
@@ -21,7 +22,7 @@ router.get('/', isAuthenticated, isAdmin, async (req, res) => {
     }
 });
 
-router.get('/:id', isAuthenticated, isHimself("id"), async (req, res) => {
+router.get('/:id', isAuthenticated, isHimselfOrAdmin("id"), async (req, res) => {
     try {
 
         if (!mongoose.isValidObjectId(req.params.id)) {
@@ -43,7 +44,7 @@ router.get('/:id', isAuthenticated, isHimself("id"), async (req, res) => {
 
 
 // DELETE
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', isAuthenticated, isHimselfOrAdmin("id"), async (req, res) => {
     try {
         const id = req.params.id
 
@@ -69,7 +70,7 @@ router.delete('/:id', async (req, res) => {
 
 
 // UPDATE
-router.put('/:id', async (req, res) => {
+router.put('/:id', isAuthenticated, isHimself("id"), async (req, res) => {
     try {
         const id = req.params.id
 
@@ -83,12 +84,6 @@ router.put('/:id', async (req, res) => {
 
         const user = await User.findByIdAndUpdate(id, { $set: body },
             { new: true, runValidators: true }).lean()
-        // .catch(err => {
-        //     if (err) {
-        //         res.status(400).send("Data validation failed")
-        //         validationFailed = true
-        //     }
-        // })
 
         if (validationFailed)
             return
@@ -108,7 +103,6 @@ router.put('/:id', async (req, res) => {
         console.log(err)
         res.status(500).send("Something went wrong")
     }
-    // }])
 })
 
 
