@@ -5,9 +5,14 @@ const router = express.Router();
 const Reservation = require('../modules/Reservation')
 const User = require('../modules/User');
 
+const isAuthenticated = require('../middleware/auth/isAuthenticated')
+const isReservationOwner = require('../middleware/auth/isReservationOwner')
+const isReservationOwnerOrEmployeeOrAdmin = require('../middleware/auth/isReservationOwnerOrEmployeeOrAdmin')
+const isHimselfOrAdmin = require('../middleware/auth/isHimselfOrAdmin')
+const isAdmin = require('../middleware/auth/isAdmin')
 
 //CREATE
-router.post('/:id', async (req, res) => {
+router.post('/:id', isAuthenticated, async (req, res) => {
     try {
         const body = req.body
         const id = req.params.id
@@ -34,7 +39,7 @@ router.post('/:id', async (req, res) => {
 
 // READ 
 // get all user reservations
-router.get('/:id', async (req, res) => {
+router.get('/:id', isAuthenticated, isHimselfOrAdmin("id"), async (req, res) => {
     try {
         const id = req.params.id
         if (!mongoose.isValidObjectId(id)) {
@@ -43,10 +48,6 @@ router.get('/:id', async (req, res) => {
         }
 
         const user = await User.findById(id)
-
-        // zostawiam na przyszłość żeby nie tracić tyle czasu szukając na stacku
-        //E11000 duplicate key error collection
-        // Reservation.collection.dropIndexes()
 
         res.status(200).json({
             status: 'success',
@@ -61,7 +62,7 @@ router.get('/:id', async (req, res) => {
 
 
 //get user (uid) reservation (rid)
-router.get('/:uid/:rid', async (req, res) => {
+router.get('/:uid/:rid', isAuthenticated, isReservationOwnerOrEmployeeOrAdmin("uid", "rid"), async (req, res) => {
     try {
         const userId = req.params.uid
         const reservationId = req.params.rid
@@ -88,7 +89,7 @@ router.get('/:uid/:rid', async (req, res) => {
 
 
 // get all reservations
-router.get('/', async (req, res) => {
+router.get('/', isAuthenticated, isAdmin, async (req, res) => {
     try {
         const reservation = await Reservation.find();
         res.status(200).json(reservation);
@@ -102,7 +103,7 @@ router.get('/', async (req, res) => {
 
 //UPDATE 
 //update user (uid) reservation (rid)
-router.put('/:uid/:rid', async (req, res) => {
+router.put('/:uid/:rid', isAuthenticated, isReservationOwner("uid", "rid"), async (req, res) => {
     try {
         const userId = req.params.uid
         const reservationId = req.params.rid
@@ -131,7 +132,7 @@ router.put('/:uid/:rid', async (req, res) => {
 
 //DELETE
 //delete user (uid) reservation (rid) from user reservations and all reservations 
-router.delete('/:uid/:rid', async (req, res) => {
+router.delete('/:uid/:rid', isAuthenticated, isReservationOwnerOrEmployeeOrAdmin("uid", "rid"), async (req, res) => {
     try {
         const userId = req.params.uid
         const reservationId = req.params.rid

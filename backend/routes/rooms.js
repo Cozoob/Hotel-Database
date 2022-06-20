@@ -5,13 +5,11 @@ const router = express.Router();
 const Room = require('../modules/Room');
 const RoleEnum = require('../enums/Role');
 
-// wszystko zakomentowane trzeba dodać jak stworzymy logowanie i weryfikacje użytkownika
 const isAuthenticated = require('../middleware/auth/isAuthenticated')
-const isAdmin = require('../middleware/auth/isAdmin')
-const isHimself = require('../middleware/auth/isHimself')
+const isEmployee = require('../middleware/auth/isEmployee')
 
 //CREATE
-router.post('/', isAuthenticated, isAdmin, async (req, res, next) => {
+router.post('/', isAuthenticated, isEmployee, async (req, res, next) => {
     try {
         const body = req.body;
         let validationFailed = false;
@@ -23,18 +21,11 @@ router.post('/', isAuthenticated, isAdmin, async (req, res, next) => {
             description: body.description,
             imageLink: body.imageLink
         })
-        // .catch(err => {
-        //     if (err) {
-        //         res.status(400).send("Data validation failed")
-        //         validationFailed = true
-        //     }
-        // })
 
         if (validationFailed)
             return
 
         res.status(200).json({
-            // message: "Room created successfully",
             room
         });
 
@@ -42,7 +33,6 @@ router.post('/', isAuthenticated, isAdmin, async (req, res, next) => {
         console.log(err);
         return res.status(500).send("Something went wrong!");
     }
-    // }])
 })
 
 
@@ -87,7 +77,7 @@ router.get('/:id', isAuthenticated, async (req, res) => {
 
 
 //UPDATE
-router.put('/:id', async (req, res) => {
+router.put('/:id', isAuthenticated, isEmployee, async (req, res) => {
     try {
         const id = req.params.id
 
@@ -101,12 +91,6 @@ router.put('/:id', async (req, res) => {
 
         const room = await Room.findByIdAndUpdate(id, { $set: body },
             { new: true, runValidators: true }).lean()
-        // .catch(err => {
-        //     if (err) {
-        //         res.status(400).send("Data validation failed")
-        //         validationFailed = true
-        //     }
-        // })
 
         if (validationFailed)
             return
@@ -126,13 +110,11 @@ router.put('/:id', async (req, res) => {
         console.log(err)
         res.status(500).send("Something went wrong")
     }
-    // }])
 })
 
 
 // DELETE
-// router.delete('/:id',[verifyUser([RoleEnum.ADMIN]), async (req, res, next) => {
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', isAuthenticated, isEmployee, async (req, res) => {
     try {
         const id = req.params.id
 
@@ -154,7 +136,6 @@ router.delete('/:id', async (req, res) => {
         console.log(err)
         res.status(500).send("Something went wrong")
     }
-    // }])
 })
 
 

@@ -16,7 +16,7 @@ module.exports = function (userIDParamName, reservationIDParamName) {
             if (!res.userData)
                 throw new Error("Expected res.userData; Check isAuthorized first")
 
-            if (!reqReservationID in res.userData.reservations)
+            if (!reqReservationID in res.userData.reservations || res.userData.roleID !== roleEnum.EMPLOYEE_ID || res.userData.roleID !== roleEnum.ADMIN_ID)
                 return res.status(403).send("Not authorized")
 
             return next()
