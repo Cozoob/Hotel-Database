@@ -50,7 +50,6 @@ router.post('/:id', isAuthenticated, async (req, res) => {
             reservation: body.reservation
         })
 
-
         if (ratingExist.length > 0) {
             res.status(404).send("Can't add more than one rate to one reservation")
             return
@@ -63,14 +62,9 @@ router.post('/:id', isAuthenticated, async (req, res) => {
             rating: body.rating
         })
 
-        // const calculatedRating = await calculateRoomRating(id);
-
         return res.status(200).send({
             rating: rating
         }
-            // "Rate"
-            // ratingTotal: calculatedRating.rating,
-            // ratingsAmount: calculatedRating.amountOfRatings
         );
 
     } catch (err) {
@@ -108,15 +102,24 @@ router.delete('/:id', isAuthenticated, async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        // const calculatedRating = await calculateEveryRoomRating()
-        const rating = await Rating.find();
-        return res.status(200).json(rating);
+        const calculatedRating = await calculateEveryRoomRating()
+        return res.status(200).json(calculatedRating);
     }
     catch (err) {
         return res.status(500).send("Something went wrong!");
     }
 })
 
+async function calculateEveryRoomRating() {
+    let result = []
+    let allRooms = JSON.parse(JSON.stringify(await Room.find()));
+
+    for (let room of allRooms) {
+        const calculatedRating = await calculateRoomRating(room._id);
+        result.push(calculatedRating)
+    }
+    return result
+}
 
 async function calculateRoomRating(room) {
     let allRatings = JSON.parse(JSON.stringify(await Rating.find({ room: room })));
@@ -138,15 +141,6 @@ async function calculateRoomRating(room) {
 }
 
 
-async function calculateEveryRoomRating() {
-    let result = []
-    let allRooms = JSON.parse(JSON.stringify(await Room.find()));
 
-    for (let room of allRooms) {
-        const calculatedRating = await calculateRoomRating(room._id);
-        result.push(calculatedRating)
-    }
-    return result
-}
 
 module.exports = router

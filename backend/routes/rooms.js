@@ -9,7 +9,7 @@ const isAuthenticated = require('../middleware/auth/isAuthenticated')
 const isEmployee = require('../middleware/auth/isEmployee')
 
 //CREATE
-router.post('/', isAuthenticated, isEmployee, async (req, res, next) => {
+router.post('/', isAuthenticated, isAdmin || isEmployee, async (req, res, next) => {
     try {
         const body = req.body;
         let validationFailed = false;
