@@ -7,6 +7,7 @@ const RoleEnum = require('../enums/Role');
 
 const isAuthenticated = require('../middleware/auth/isAuthenticated')
 const isEmployee = require('../middleware/auth/isEmployee')
+const isAdmin = require('../middleware/auth/isAdmin')
 
 //CREATE
 router.post('/', isAuthenticated, isAdmin || isEmployee, async (req, res, next) => {
